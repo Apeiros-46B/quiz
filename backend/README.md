@@ -72,6 +72,6 @@ go build
   - `value` (JSON): the value of the setting (either a JSON string or a JSON array of strings)
     - if the value is an array of strings, then they will be concatenated into one string (delimited by newline)
 
-## Running
+## Serving frontend
 
 See [main README](../README.md).
