@@ -9,6 +9,13 @@ go build
 
 ## Configuration
 
+```bash
+./pocketbase serve
+```
+
+- Visit `http://localhost:8090/_` and create an admin account
+- Set up collection records:
+
 <details>
   <summary><code>questions</code> collection</summary><br>
 
