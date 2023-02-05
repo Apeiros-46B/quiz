@@ -61,7 +61,7 @@ go build
       - `successHTML` (HTML): the HTML on the success screen (excluding the keyword)
       - `successKW` (HTML): the HTML keyword on the success screen
         <details>
-          <summary>placeholders for embedding stats</summary>
+          <summary>available placeholders for embedding stats</summary>
 
           - `%userID%`: the user's ID (as reported in the `attempts` collection)
           - `%attempts%`: how many attempts this run took (previous unsuccessful attempts + this successful attempt) for the user
