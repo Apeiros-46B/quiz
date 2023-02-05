@@ -1,0 +1,30 @@
+version: '3.5'
+
+services:
+  pocketbase-backend:
+    build: backend
+    image: pocketbase-custom
+    entrypoint: /pocketbase
+    command: "serve --http 0.0.0.0:${PORT} --dir /app/pb_data --publicDir /frontend/build"
+    user: ${UID}:${GID}
+    expose:
+      - ${PORT}
+    ports:
+      - "${PORT}:${PORT}"
+    working_dir: /app
+    environment:
+      - HOME=/app
+    volumes:
+      - ./backend:/app
+      - ./frontend:/frontend
+      - ./backend/.go:/go/pkg
+  sveltekit-frontend:
+    image: node:alpine
+    user: ${UID}:${GID}
+    # sveltekit build
+    command: sh -c "npx pnpm install && npm run build"
+    volumes:
+      - .:/app
+    environment:
+      - HOME=/app
+    working_dir: /app/frontend
