@@ -9,7 +9,6 @@
         userID,
     } from '$lib/app/stores';
 
-    import { submitToBackend } from '$lib/app/submit';
     import Choices from '$lib/components/Choices.svelte';
 
     // load settings & questions
@@ -97,7 +96,20 @@
         inQuiz = false;
 
         // check answers
-        let result = await submitToBackend();
+        let attemptTimeStr = $attemptTime.toString();
+        let totalTimeStr = $totalTime.toString();
+        let result = await fetch('/api/submit', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'X-User-ID': $userID,
+                'X-Attempt-Time': attemptTimeStr,
+                'X-Total-Time': totalTimeStr,
+            },
+            body: JSON.stringify($answers),
+        }).then(response => response.json());
+
         correct = result.correct;
         keyword = result.keyword;
 
@@ -105,8 +117,8 @@
             // embed stats in keyword
             keyword = keyword.replace('%userID%', $userID);
             keyword = keyword.replace('%attempts%', $attemptCount.toString());
-            keyword = keyword.replace('%attemptTime%', $attemptTime.toString());
-            keyword = keyword.replace('%totalTime%', $totalTime.toString());
+            keyword = keyword.replace('%attemptTime%', attemptTimeStr);
+            keyword = keyword.replace('%totalTime%', totalTimeStr);
 
             // reset stats
             $attemptCount = 0;
