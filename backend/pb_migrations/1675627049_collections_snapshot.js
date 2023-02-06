@@ -13,7 +13,7 @@ migrate((db) => {
           "id": "znxm0s05",
           "name": "userid",
           "type": "text",
-          "required": true,
+          "required": false,
           "unique": false,
           "options": {
             "min": null,
@@ -26,7 +26,7 @@ migrate((db) => {
           "id": "ztx8wg9p",
           "name": "time",
           "type": "number",
-          "required": true,
+          "required": false,
           "unique": false,
           "options": {
             "min": null,
@@ -38,7 +38,7 @@ migrate((db) => {
           "id": "nxtxyxtt",
           "name": "total_time",
           "type": "number",
-          "required": true,
+          "required": false,
           "unique": false,
           "options": {
             "min": null,
@@ -50,10 +50,10 @@ migrate((db) => {
           "id": "kty4zbs3",
           "name": "correct",
           "type": "bool",
-          "required": true,
+          "required": false,
           "unique": false,
           "options": {}
-        }
+        },
       ],
       "listRule": null,
       "viewRule": null,
@@ -78,7 +78,7 @@ migrate((db) => {
           "required": false,
           "unique": false,
           "options": {
-            "min": null,
+            "min": 0,
             "max": null
           }
         },
@@ -141,7 +141,7 @@ migrate((db) => {
           "required": false,
           "unique": false,
           "options": {
-            "min": null,
+            "min": 0,
             "max": null
           }
         }
@@ -167,7 +167,7 @@ migrate((db) => {
           "name": "key",
           "type": "text",
           "required": true,
-          "unique": false,
+          "unique": true,
           "options": {
             "min": null,
             "max": null,
@@ -179,7 +179,7 @@ migrate((db) => {
           "id": "uzechwpv",
           "name": "value",
           "type": "json",
-          "required": true,
+          "required": false,
           "unique": false,
           "options": {}
         }

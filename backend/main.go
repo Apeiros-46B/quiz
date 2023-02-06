@@ -1,23 +1,24 @@
 package main
 
 import (
-    "encoding/json"
-    "log"
-    "net/http"
-    "os"
-    "path/filepath"
-    "strconv"
-    "strings"
+	"encoding/json"
+	"log"
+	"net/http"
+	"os"
+	"path/filepath"
+	"regexp"
+	"strconv"
+	"strings"
 
-    "github.com/labstack/echo/v5"
-    "github.com/pocketbase/dbx"
-    "github.com/pocketbase/pocketbase"
-    "github.com/pocketbase/pocketbase/apis"
-    "github.com/pocketbase/pocketbase/core"
-    "github.com/pocketbase/pocketbase/daos"
-    "github.com/pocketbase/pocketbase/models"
-    "github.com/pocketbase/pocketbase/plugins/jsvm"
-    "github.com/pocketbase/pocketbase/plugins/migratecmd"
+	"github.com/labstack/echo/v5"
+	"github.com/pocketbase/dbx"
+	"github.com/pocketbase/pocketbase"
+	"github.com/pocketbase/pocketbase/apis"
+	"github.com/pocketbase/pocketbase/core"
+	"github.com/pocketbase/pocketbase/daos"
+	"github.com/pocketbase/pocketbase/models"
+	"github.com/pocketbase/pocketbase/plugins/jsvm"
+	"github.com/pocketbase/pocketbase/plugins/migratecmd"
 )
 
 // {{{ get default public dir
@@ -48,6 +49,8 @@ func checkSubmissions(dao *daos.Dao, submissions map[string]int) bool {
 // }}}
 
 func main() {
+    userIDRegex := regexp.MustCompile("[A-Za-z0-9_\\-]{21}")
+
     app := pocketbase.New()
 
     var publicDirFlag string
@@ -90,21 +93,29 @@ func main() {
                 // {{{ unmarshal request body & check answers
                 var answers map[string]int;
                 if err := json.NewDecoder(req.Body).Decode(&answers); err != nil { panic(err) }
-                correct := checkSubmissions(dao, answers)
+
+                // check for user id
+                userID := req.Header.Get("X-User-ID")
+                var correct bool;
+                if userIDRegex.FindString(userID) == "" {
+                    // consider incorrect if no userID
+                    correct = false
+                } else {
+                    correct = checkSubmissions(dao, answers)
+                }
                 // }}}
 
                 // {{{ add attempt record
                 numFromHeader := func(field string) int {
-                    item, err := strconv.Atoi(req.Header.Get(field));
-                    if err != nil { panic(err) }
-                    return item
+                    num, _ := strconv.Atoi(req.Header.Get(field));
+                    return num
                 }
 
                 collection, err := dao.FindCollectionByNameOrId("attempts")
                 if err != nil { panic(err) }
 
                 record := models.NewRecord(collection);
-                record.Set("userid", req.Header.Get("X-User-ID"))
+                record.Set("userid", userID)
                 record.Set("time", numFromHeader("X-Attempt-Time"))
                 record.Set("total_time", numFromHeader("X-Total-Time"))
                 record.Set("correct", correct)
