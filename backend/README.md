@@ -13,7 +13,8 @@ go build
 ./pocketbase serve
 ```
 
-- Visit `http://localhost:8090/_` and create an admin account
+- Visit the admin dashboard (`http://host:port/_`) and create an admin account
+  - e.g., if you're doing this on your own computer, go to `http://localhost:8090/_`
 - Set up collection records:
 
 <details>
