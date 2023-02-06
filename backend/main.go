@@ -1,31 +1,31 @@
 package main
 
 import (
-	"encoding/json"
-	"log"
-	"net/http"
-	"os"
-	"path/filepath"
-	"strconv"
-	"strings"
+    "encoding/json"
+    "log"
+    "net/http"
+    "os"
+    "path/filepath"
+    "strconv"
+    "strings"
 
-	"github.com/labstack/echo/v5"
-	"github.com/pocketbase/dbx"
-	"github.com/pocketbase/pocketbase"
-	"github.com/pocketbase/pocketbase/apis"
-	"github.com/pocketbase/pocketbase/core"
-	"github.com/pocketbase/pocketbase/daos"
-	"github.com/pocketbase/pocketbase/models"
-	"github.com/pocketbase/pocketbase/plugins/jsvm"
-	"github.com/pocketbase/pocketbase/plugins/migratecmd"
+    "github.com/labstack/echo/v5"
+    "github.com/pocketbase/dbx"
+    "github.com/pocketbase/pocketbase"
+    "github.com/pocketbase/pocketbase/apis"
+    "github.com/pocketbase/pocketbase/core"
+    "github.com/pocketbase/pocketbase/daos"
+    "github.com/pocketbase/pocketbase/models"
+    "github.com/pocketbase/pocketbase/plugins/jsvm"
+    "github.com/pocketbase/pocketbase/plugins/migratecmd"
 )
 
 // {{{ get default public dir
 func defaultPublicDir() string {
-	if strings.HasPrefix(os.Args[0], os.TempDir()) {
-		return "./pb_public"
-	}
-	return filepath.Join(os.Args[0], "../pb_public")
+    if strings.HasPrefix(os.Args[0], os.TempDir()) {
+        return "./pb_public"
+    }
+    return filepath.Join(os.Args[0], "../pb_public")
 }
 // }}}
 
@@ -48,36 +48,36 @@ func checkSubmissions(dao *daos.Dao, submissions map[string]int) bool {
 // }}}
 
 func main() {
-	app := pocketbase.New()
+    app := pocketbase.New()
 
-	var publicDirFlag string
+    var publicDirFlag string
 
-	// add "--publicDir" flag
-	app.RootCmd.PersistentFlags().StringVar(
-		&publicDirFlag,
-		"publicDir",
-		defaultPublicDir(),
-		"the directory to serve static files",
-	)
+    // add "--publicDir" flag
+    app.RootCmd.PersistentFlags().StringVar(
+        &publicDirFlag,
+        "publicDir",
+        defaultPublicDir(),
+        "the directory to serve static files",
+    )
 
     // {{{ setup migrations
     migrationsDir := "" // default to "pb_migrations" (for js) and "migrations" (for go)
 
-	// load js files to allow loading external JavaScript migrations
-	jsvm.MustRegisterMigrations(app, &jsvm.MigrationsOptions{
-		Dir: migrationsDir,
-	})
+    // load js files to allow loading external JavaScript migrations
+    jsvm.MustRegisterMigrations(app, &jsvm.MigrationsOptions{
+        Dir: migrationsDir,
+    })
 
-	// register the `migrate` command
-	migratecmd.MustRegister(app, app.RootCmd, &migratecmd.Options{
-		TemplateLang: migratecmd.TemplateLangJS, // or migratecmd.TemplateLangGo (default)
-		Dir:          migrationsDir,
-	})
+    // register the `migrate` command
+    migratecmd.MustRegister(app, app.RootCmd, &migratecmd.Options{
+        TemplateLang: migratecmd.TemplateLangJS, // or migratecmd.TemplateLangGo (default)
+        Dir:          migrationsDir,
+    })
     // }}}
 
-	app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
+    app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
         // serve static files from pub dir
-		e.Router.GET("/*", apis.StaticDirectoryHandler(os.DirFS(publicDirFlag), true))
+        e.Router.GET("/*", apis.StaticDirectoryHandler(os.DirFS(publicDirFlag), true))
 
         // {{{ api endpoint to check answers
         e.Router.AddRoute(echo.Route {
@@ -137,10 +137,10 @@ func main() {
         })
         // }}}
 
-		return nil
-	})
+        return nil
+    })
 
-	if err := app.Start(); err != nil {
-		log.Fatal(err)
-	}
+    if err := app.Start(); err != nil {
+        log.Fatal(err)
+    }
 }
