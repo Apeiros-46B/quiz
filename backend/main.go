@@ -48,9 +48,14 @@ func checkSubmissions(dao *daos.Dao, submissions map[string]int) bool {
 }
 // }}}
 
-func main() {
-    userIDRegex := regexp.MustCompile("[A-Za-z0-9_\\-]{21}")
+var uIDRegex = regexp.MustCompile("[A-Za-z0-9_\\-]{21}")
+var numRegex = regexp.MustCompile("[0-9]+")
 
+func check(pattern *regexp.Regexp, s string) bool {
+    return pattern.FindString(s) != ""
+}
+
+func main() {
     app := pocketbase.New()
 
     var publicDirFlag string
@@ -75,6 +80,7 @@ func main() {
     migratecmd.MustRegister(app, app.RootCmd, &migratecmd.Options{
         TemplateLang: migratecmd.TemplateLangJS, // or migratecmd.TemplateLangGo (default)
         Dir:          migrationsDir,
+        Automigrate:  false,
     })
     // }}}
 
@@ -96,19 +102,27 @@ func main() {
 
                 // check for user id
                 userID := req.Header.Get("X-User-ID")
+                attemptTime := req.Header.Get("X-Attempt-Time")
+                totalTime := req.Header.Get("X-Total-Time")
+
                 var correct bool;
-                if userIDRegex.FindString(userID) == "" {
-                    // consider incorrect if no userID
-                    correct = false
-                } else {
+
+                if check(uIDRegex, userID) && check(numRegex, attemptTime) && check(numRegex, totalTime) {
                     correct = checkSubmissions(dao, answers)
+                } else {
+                    // consider incorrect if valid custom headers missing
+                    correct = false
                 }
                 // }}}
 
                 // {{{ add attempt record
-                numFromHeader := func(field string) int {
-                    num, _ := strconv.Atoi(req.Header.Get(field));
-                    return num
+                tryAtoi := func(s string) int {
+                    num, _ := strconv.Atoi(s);
+                    if num == 0 {
+                        return -1
+                    } else {
+                        return num
+                    }
                 }
 
                 collection, err := dao.FindCollectionByNameOrId("attempts")
@@ -116,8 +130,8 @@ func main() {
 
                 record := models.NewRecord(collection);
                 record.Set("userid", userID)
-                record.Set("time", numFromHeader("X-Attempt-Time"))
-                record.Set("total_time", numFromHeader("X-Total-Time"))
+                record.Set("time", tryAtoi(attemptTime))
+                record.Set("total_time", tryAtoi(totalTime))
                 record.Set("correct", correct)
 
                 if err := dao.SaveRecord(record); err != nil { panic(err) }
