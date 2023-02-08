@@ -49,7 +49,7 @@
         getQuestion();
 
         setDisplayByID('startContainer', 'none');
-        setDisplayByID('questionContainer', 'block');
+        setDisplayByID('questionContainer', 'flex');
 
         timeStart = Date.now();
     }
@@ -60,6 +60,7 @@
         let q = data.questions[qn];
         qID = q.id;
         question = q.question;
+        console.log(question);
         choices = q.choices;
     }
     // }}}
@@ -135,25 +136,35 @@
     <title>{inQuiz ? `Quiz - ${question}` : 'Quiz'}</title>
 </svelte:head>
 
-<!-- start screen -->
-<div class="container" id="startContainer">
-    {@html data.startHTML}
+<div class="rootContainer">
+    <!-- start screen -->
+    <div class="container" id="startContainer" style="display: flex">
+        <div class="card">
+            {@html data.startHTML}
+        </div>
 
-    <button on:click={startQuiz}>{data.startButtonTxt}</button>
-</div>
+        <br>
+        <button on:click={startQuiz}>{data.startButtonTxt}</button>
+    </div>
 
-<!-- question screen -->
-<div class="container" id="questionContainer" style="display: none">
-    <button on:click={next}>{nextTxt}</button>
+    <!-- question screen -->
+    <div class="container" id="questionContainer" style="display: none">
+        <div class="card">
+            <p class="question"><strong>{question}</strong></p>
+            <Choices {qID} {choices} />
+        </div>
 
-    <h1 class="question">{question}</h1>
-    <Choices {qID} {choices} />
-</div>
+        <br>
+        <button on:click={next}>{nextTxt}</button>
+    </div>
 
-<!-- end screen -->
-<div class="container" id="endContainer" style="display: none">
-    {@html correct ? data.successHTML : data.failureHTML}
-    {@html keyword}
+    <!-- end screen -->
+    <div class="container" id="endContainer" style="display: none">
+        <div class="card">
+            {@html correct ? data.successHTML : data.failureHTML}
+            {@html keyword}
+        </div>
+    </div>
 </div>
 
 <style>
@@ -189,53 +200,159 @@
         /* }}} */
 
         /* {{{ center elements */
-        text-align: center;
-        align-items: center;
-        justify-content: center;
+        /* text-align: center; */
+        /* align-items: center; */
+        /* justify-content: center; */
 
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        -ms-transform: translate(-50%, -50%);
+        /* position: relative; */
+        /* top: 50%; */
+        /* left: 50%; */
+        /* transform: translateY(50%); */
+        /* transform: translate(0, 25%); */
+        /* -ms-transform: translate(-50%, -50%); */
         /* }}} */
 
         font-family: 'Work Sans', sans-serif;
-        font-size: 1.5rem;
+        font-size: 1rem;
+        line-height: 1.2;
+
         color: var(--white);
-        padding: 0 0.5rem;
-        background: var(--gray1);
-        line-height: 1;
-        max-width: 30rem;
+        background-color: var(--gray1);
+
         margin: auto;
+        margin-top: 8vh;
     }
 
+    /* {{{ markup elements */
     :global(h1) {
-        font-size: 2.2rem !important;
-        margin-top: 1rem;
+        font-size: 1.6rem;
+        margin-top: 0px;
         margin-bottom: 1rem;
     }
 
     :global(strong) {
-        font-size: 1.2rem !important;
+        font-size: 1.2rem;
+        font-weight: 700;
     }
+
+    .question {
+        font-size: 1.2rem;
+        margin-block-start: 0px;
+        margin-block-end: 1em;
+    }
+    /* }}} */
+
+    /* {{{ containers */
+    .rootContainer {
+        display: grid;
+        height: 100%;
+        width: 100%;
+    }
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+        max-height: 84vh;
+        margin: auto;
+
+        text-align: center;
+        align-items: center;
+    }
+
+    /* {{{ adaptive container width based on screen width */
+    .container {
+        max-width: 72vw;
+    }
+
+    @media (min-width: 600px) {
+        .container {
+            max-width: 68vw;
+        }
+    }
+
+    @media (min-width: 700px) {
+        .container {
+            max-width: 64vw;
+        }
+    }
+
+    @media (min-width: 800px) {
+        .container {
+            max-width: 60vw;
+        }
+    }
+
+    @media (min-width: 900px) {
+        .container {
+            max-width: 56vw;
+        }
+    }
+
+    @media (min-width: 1000px) {
+        .container {
+            max-width: 48vw;
+        }
+    }
+    /* }}} */
+
+    .card {
+        flex-grow: 1;
+        padding: 20px;
+        overflow-wrap: break-word;
+        overflow-y: auto;
+
+        text-align: left;
+
+        background-color: var(--gray2);
+
+        border-radius: 8px;
+        box-shadow: 0 0 8px var(--gray0);
+    }
+    /* }}} */
+
+    /* {{{ scrollbar */
+    ::-webkit-scrollbar {
+        width: 16px;
+    }
+
+    ::-webkit-scrollbar-track {
+        opacity: 0px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: var(--gray3);
+        background-clip: content-box;
+
+        border: 6px solid transparent;
+        border-radius: 16px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: var(--gray4);
+    }
+    /* }}} */
 
     /* {{{ buttons */
     :global(button) {
-        font-family: inherit;
-        font-weight: 500;
-        font-size: 1.2rem;
+        display: inline-block;
+        max-width: 10em;
+        padding: 4px 8px;
 
         text-align: center;
         text-decoration: none;
 
-        display: inline-block;
-        padding: 4px 8px;
-        border: none;
-        border-radius: 8px;
+        font-family: inherit;
+        font-weight: 500;
+        font-size: 1.2rem;
 
         color: var(--gray7);
         background-color: var(--gray2);
+
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 0 8px var(--gray0);
+
         transition: 0.2s all;
         transition-property: color, background-color;
     }
