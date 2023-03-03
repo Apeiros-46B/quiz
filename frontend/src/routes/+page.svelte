@@ -168,7 +168,7 @@
 </div>
 
 <style>
-    /* @import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&display=swap'); */
+    @import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&display=swap');
 
     :global(body) {
         /* {{{ variables */
