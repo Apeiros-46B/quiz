@@ -168,35 +168,20 @@
 </div>
 
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&display=swap');
+    /* @import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&display=swap'); */
 
     :global(body) {
         /* {{{ variables */
-        --gray0: #282c34;
-        --gray1: #2b3339;
-        --gray2: #323c41;
-        --gray3: #3a454a;
-        --gray4: #445055;
-        --gray5: #607279;
-        --gray6: #7a8487;
-        --gray7: #859289;
-        --gray8: #9da9a0;
+        --fg:       #d3c6aa;
+        --fg-muted: #859289;
 
-        --white: #d3c6aa;
+        --accent:    #a7c080;
+        --bg-accent: #404d44;
 
-        --red: #e67e80;
-        --orange: #e69875;
-        --yellow: #ddbc7f;
-        --green: #a7c080;
-        --teal: #83c092;
-        --blue: #7fbbb3;
-        --purple: #d699b6;
-
-        --visual_bg: #503946;
-        --bg_yellow: #4a4940;
-        --diff_del: #4e3e43;
-        --diff_add: #404d44;
-        --diff_mod: #394f5a;
+        --bg1: #2b3339;
+        --bg2: #323c41;
+        --bg3: #3a454a;
+        --bg4: #445055;
         /* }}} */
 
         /* {{{ center elements */
@@ -216,8 +201,8 @@
         font-size: 1rem;
         line-height: 1.2;
 
-        color: var(--white);
-        background-color: var(--gray1);
+        color: var(--fg);
+        background-color: var(--bg1);
 
         margin: auto;
         margin-top: 8vh;
@@ -304,10 +289,10 @@
 
         text-align: left;
 
-        background-color: var(--gray2);
+        background-color: var(--bg2);
 
         border-radius: 8px;
-        box-shadow: 0 0 8px var(--gray0);
+        box-shadow: 0 0 8px var(--bg1);
     }
     /* }}} */
 
@@ -321,7 +306,7 @@
     }
 
     ::-webkit-scrollbar-thumb {
-        background-color: var(--gray3);
+        background-color: var(--bg3);
         background-clip: content-box;
 
         border: 6px solid transparent;
@@ -329,7 +314,7 @@
     }
 
     ::-webkit-scrollbar-thumb:hover {
-        background-color: var(--gray4);
+        background-color: var(--bg4);
     }
     /* }}} */
 
@@ -346,25 +331,25 @@
         font-weight: 500;
         font-size: 1.2rem;
 
-        color: var(--gray7);
-        background-color: var(--gray2);
+        color: var(--fg-muted);
+        background-color: var(--bg2);
 
         border: none;
         border-radius: 8px;
-        box-shadow: 0 0 8px var(--gray0);
+        box-shadow: 0 0 8px var(--bg1);
 
         transition: 0.2s all;
         transition-property: color, background-color;
     }
 
     :global(button):hover {
-        color: var(--white);
-        background-color: var(--diff_add);
+        color: var(--fg);
+        background-color: var(--bg-accent);
     }
 
     :global(button):active {
-        color: var(--gray1);
-        background-color: var(--green);
+        color: var(--bg1);
+        background-color: var(--accent);
     }
     /* }}} */
 </style>

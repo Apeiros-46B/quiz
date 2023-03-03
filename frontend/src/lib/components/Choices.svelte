@@ -30,7 +30,7 @@
 
         font-size: 1rem;
 
-        background-color: var(--gray3);
+        background-color: var(--bg3);
 
         box-shadow: 0px 0px transparent;
     }
@@ -78,7 +78,7 @@
     /* }}} */
 
     button.active {
-        color: var(--gray1);
-        background-color: var(--green);
+        color: var(--bg1);
+        background-color: var(--accent);
     }
 </style>
