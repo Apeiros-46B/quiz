@@ -71,6 +71,7 @@ go build
         </details>
     </details>
   - `value` (JSON): the value of the setting (either a JSON string or a JSON array of strings)
+    - Note that this must adhere to valid JSON syntax (strings must be surrounded by double quotes)
     - if the value is an array of strings, then they will be concatenated into one string (delimited by newline)
 
 ## Serving frontend
