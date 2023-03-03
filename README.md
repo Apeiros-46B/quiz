@@ -38,3 +38,11 @@ docker compose up
 ```
 
 to build & start the PocketBase backend and build & serve the SvelteKit frontend
+
+Alternatively, if you do not wish to use Docker, do
+
+```bash
+cd frontend && npx pnpm install && npm run build && npm run backend
+```
+
+to manually build & serve the site.
